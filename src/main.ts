@@ -1,5 +1,19 @@
+import { Import } from './../node_modules/@babel/types/lib/index-legacy.d';
+
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+import store from './store';
+import PrimeVue from 'primevue/config';
 
-createApp(App).use(router).mount('#app')
+import 'primevue/resources/themes/saga-blue/theme.css'; 
+import 'primevue/resources/primevue.min.css';           
+import 'primeicons/primeicons.css';                   
+
+const app = createApp(App)
+
+app.use(store)
+app.use(router)
+app.use(PrimeVue);
+
+app.mount('#app')

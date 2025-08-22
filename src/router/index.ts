@@ -1,19 +1,25 @@
+// src/router/index.ts
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import LoginView from '../views/Login.vue'
+import { useAuthStore } from '@/store/auth';
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
+    path: '/login',
+    name: 'login',
+    component: LoginView
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path: '/',
+    redirect: '/products'
+  },
+  // Un ejemplo de la futura página de productos
+  {
+    path: '/products',
+    name: 'products',
+    // Lazy loading: el componente solo se carga cuando se visita
+    component: () => import(/* webpackChunkName: "products" */ '../views/Products.vue'),
+    meta: { requiresAuth: true } // Marcamos que esta ruta requiere autenticación
   }
 ]
 
@@ -21,5 +27,19 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+// Guardia de navegación
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore();
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+
+  if (requiresAuth && !authStore.isLoggedIn) {
+    // Si la ruta requiere auth y no está logueado, redirige a login
+    next('/login');
+  } else {
+    // De lo contrario, permite el acceso
+    next();
+  }
+});
 
 export default router
