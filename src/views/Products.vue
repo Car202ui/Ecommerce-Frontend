@@ -65,7 +65,7 @@ export default defineComponent({
       return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
     };
 
-    const addToCart = (product: Product) => { // Especificamos el tipo aquí
+    const addToCart = (product: Product) => { 
       cartStore.addItem(product);
       console.log(`${product.name} añadido al carrito!`);
     };

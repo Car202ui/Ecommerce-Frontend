@@ -1,16 +1,14 @@
-// src/services/ProductService.ts
 import axios from 'axios';
 import { useAuthStore } from '@/store/auth';
 
 const API_URL = 'http://localhost:9091/api/';
 
-const apiClient = axios.create({
+export const apiClient = axios.create({
     baseURL: API_URL,
     headers: {
         'Content-Type': 'application/json',
     }
 });
-
 
 apiClient.interceptors.request.use(config => {
     const authStore = useAuthStore();
@@ -23,6 +21,11 @@ apiClient.interceptors.request.use(config => {
 class ProductService {
     getAllProducts() {
         return apiClient.get('products');
+    }
+
+  
+    searchProductsByName(name: string) {
+        return apiClient.get(`reports/search?name=${name}`);
     }
 }
 
