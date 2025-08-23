@@ -1,33 +1,27 @@
-
-import { apiClient } from './ProductService'; 
+import { apiClient } from './ProductService';
 import type { CartItem } from '@/types';
 
+interface OrderItemRequest { productId: number; quantity: number; }
+interface CreateOrderRequest { items: OrderItemRequest[]; randomOrder: boolean; }
 
-interface OrderItemRequest {
-    productId: number;
-    quantity: number;
-}
 
-interface CreateOrderRequest {
-    items: OrderItemRequest[];
-    isRandomOrder: boolean;
+export interface OrderDto {
+  id: number; orderDate: string; status: string;
+  totalAmount: number | string; discountApplied: number | string; finalAmount: number | string;
+  items: { productId:number; productName:string; quantity:number; pricePerUnit:number|string }[];
 }
 
 class OrderService {
-    createOrder(cartItems: CartItem[]) {
-        const orderRequest: CreateOrderRequest = {
-            items: cartItems.map(item => ({
-                productId: item.id,
-                quantity: item.quantity,
-            })),
-            isRandomOrder: false 
-        };
-       return apiClient.post('orders/create', orderRequest);
-    }
+  createOrder(cartItems: CartItem[]) {
+    const body: CreateOrderRequest = {
+      items: cartItems.map(i => ({ productId: i.id, quantity: i.quantity })),
+      randomOrder: false,
+    };
+    return apiClient.post<OrderDto>('/orders/create', body);
+  }
 
-     getOrdersForCurrentUser() {
-        return apiClient.get('orders/my-orders');
-    }
+  getOrdersForCurrentUser() {
+    return apiClient.get<OrderDto[]>('/orders/my-orders'); 
+  }
 }
-
 export default new OrderService();

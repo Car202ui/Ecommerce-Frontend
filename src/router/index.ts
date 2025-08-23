@@ -31,12 +31,24 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "reports" */ '../views/Reports.vue'),
     meta: { requiresAuth: true, requiresAdmin: true }
   },
+  
+  { path: 
+    '/my-orders', name: 'my-orders', component: () => import('../views/MyOrders.vue'), meta: { requiresAuth: true } 
+},
+
+
   {
-    path: '/my-orders',
-    name: 'my-orders',
-    component: () => import(/* webpackChunkName: "my-orders" */ '../views/MyOrders.vue'),
-    meta: { requiresAuth: true }
-  }
+  path: '/users',
+  name: 'users',
+  component: () => import(/* webpackChunkName: "users" */ '../views/Users.vue'),
+  meta: { requiresAuth: true, requiresAdmin: true }
+},
+{
+  path: '/inventory',
+  name: 'inventory',
+  component: () => import('../views/InventoryView.vue'),
+  meta: { requiresAuth: true, requiresAdmin: true }
+}
 ]
 
 const router = createRouter({
@@ -57,6 +69,16 @@ router.beforeEach((to, from, next) => {
   } else {
     next();
   }
+});
+
+
+router.beforeEach((to, _from, next) => {
+  const auth = useAuthStore();
+  const requiresAuth = to.matched.some(r => r.meta.requiresAuth);
+  const requiresAdmin = to.matched.some(r => r.meta.requiresAdmin);
+  if (requiresAuth && !auth.isLoggedIn) next('/login');
+  else if (requiresAdmin && !(auth.user?.roles || []).includes('ROLE_ADMIN')) { alert('Acceso denegado'); next('/'); }
+  else next();
 });
 
 export default router

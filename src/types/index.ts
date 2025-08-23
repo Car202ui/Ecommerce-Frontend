@@ -8,6 +8,17 @@ export interface UserRegister {
   username: string;
   email: string;
   password: string;
+  firstName: string;
+  lastName: string;
+}
+
+export interface UserUpdate {
+  username?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  frequent?: boolean;
+  roles?: Role[];
 }
 
 export interface LoginResponse {
@@ -21,6 +32,7 @@ export interface Product {
     description: string;
     price: number;
     active: boolean;
+    stock?: number;
 }
 
 
@@ -58,4 +70,46 @@ export interface TopCustomerDto {
   userId: number;
   username: string;
   orderCount: number;
+}
+
+
+export interface Role {
+  id: number;
+  name: string;
+}
+
+export interface User {
+  id: number; username: string; email: string;
+  firstName: string; lastName: string; frequent: boolean; roles: Role[];
+}
+
+
+export interface Role { id: number; name: string; }
+
+export interface UserUpdate {
+  username?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  frequent?: boolean;
+  roles?: Role[]; 
+}
+
+
+export interface AuditLog {
+  id: number;
+  action: 'CREATE' | 'UPDATE' | 'DELETE' | string;
+  entityName: string;
+  entityId: number;
+  changedBy: string;
+  changeTimestamp: string; // ISO-8601
+  details: string;         // JSON con before/after
+}
+
+export interface Page<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+  size: number;   
 }

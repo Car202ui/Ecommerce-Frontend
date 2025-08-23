@@ -4,6 +4,8 @@
     <div class="main-content">
       <router-view />
     </div>
+      <Toast />       
+    <ConfirmDialog />
   </div>
 </template>
 
@@ -18,7 +20,6 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
-    // No mostramos la Navbar en la página de login
     const showNavBar = computed(() => route.name !== 'login');
     return { showNavBar };
   }

@@ -1,0 +1,2 @@
+
+declare module 'primevue/tag';
