@@ -102,8 +102,8 @@ export interface AuditLog {
   entityName: string;
   entityId: number;
   changedBy: string;
-  changeTimestamp: string; // ISO-8601
-  details: string;         // JSON con before/after
+  changeTimestamp: string; 
+  details: string;         
 }
 
 export interface Page<T> {

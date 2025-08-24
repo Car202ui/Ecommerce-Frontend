@@ -3,13 +3,13 @@ import axios from 'axios';
 import type { Product } from '@/types';
 
 export const apiClient = axios.create({
-  baseURL: 'http://localhost:9091/api', // ajusta si usas otro host/puerto
+  baseURL: 'http://localhost:9091/api', 
   headers: { 'Content-Type': 'application/json' }
 });
 
-/** INTERCEPTOR: adjunta el JWT a TODAS las requests */
+
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token'); // o desde tu store si lo guardas allí
+  const token = localStorage.getItem('token'); 
   if (token) {
     config.headers = config.headers ?? {};
     (config.headers as any).Authorization = `Bearer ${token}`;

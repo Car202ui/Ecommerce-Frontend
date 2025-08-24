@@ -15,7 +15,22 @@
           <div v-for="order in orders" :key="order.id" class="order-card">
             <Card>
               <template #title>
-                Orden #{{ order.id }} - <small>({{ formatDate(order.orderDate) }})</small>
+              
+                <div class="card-title-row">
+                  <div>
+                    Orden #{{ order.id }} - <small>({{ formatDate(order.orderDate) }})</small>
+                  </div>
+
+            
+                  <Button
+                    v-if="isAdmin"
+                    icon="pi pi-history"
+                    class="p-button-rounded p-button-help"
+                    @click="openAudit(order.id)"
+                    :aria-label="`Historial de la orden ${order.id}`"
+                  />
+                </div>
+              
               </template>
 
               <template #content>
@@ -67,21 +82,31 @@
         </div>
       </template>
     </Card>
+
+    <AuditDrawer
+  v-model="auditOpen"
+  :entity="auditEntity"
+  :entityId="auditId"  
+/>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref, onMounted, computed } from 'vue';
 import OrderService from '@/services/OrderService';
 import Card from 'primevue/card';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import ProgressSpinner from 'primevue/progressspinner';
 import Tag from 'primevue/tag';
+import Button from 'primevue/button';                     // ⬅ NUEVO
+import AuditDrawer from '@/components/AuditDrawer.vue';   // ⬅ NUEVO
+import { useAuthStore } from '@/store/auth';              // ⬅ NUEVO
+
 
 export default defineComponent({
   name: 'MyOrders',
-  components: { Card, DataTable, Column, ProgressSpinner, Tag },
+  components: { Card, DataTable, Column, ProgressSpinner, Tag, Button, AuditDrawer },
   setup() {
     const orders = ref<any[]>([]);
     const loading = ref(true);
@@ -92,6 +117,30 @@ export default defineComponent({
       finally { loading.value = false; }
     });
 
+    
+
+   
+    const auth = useAuthStore();
+    const isAdmin = computed(() => {
+      const r = auth.user?.roles;
+      return Array.isArray(r) && r.some(x => x === 'ROLE_ADMIN' || x?.name === 'ROLE_ADMIN');
+    });
+
+    
+const auditOpen   = ref(false);
+const auditEntity = ref<'Order' | string>('Order');
+
+const auditId     = ref<number>(0);
+
+const openAudit = (id: number) => {
+  auditEntity.value = 'Order';
+  auditId.value = id;    
+  auditOpen.value = true;  
+};
+
+
+
+
     const num = (v: any) => (typeof v === 'number' ? v : Number(v) || 0);
     const formatCurrency = (v: number) =>
       v.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
@@ -99,7 +148,7 @@ export default defineComponent({
       const d = new Date(iso); return isNaN(d.getTime()) ? iso : d.toLocaleString();
     };
 
-    return { orders, loading, formatCurrency, formatDate, num };
+    return { orders, loading, formatCurrency, formatDate, num, isAdmin, auditOpen, auditEntity, auditId, openAudit,AuditDrawer};
   }
 });
 </script>
@@ -110,4 +159,11 @@ export default defineComponent({
 .text-center { text-align: center; }
 .totals { margin-top: .5rem; }
 .totals .final span { font-weight: 700; }
+
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 </style>

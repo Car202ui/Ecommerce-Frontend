@@ -75,7 +75,7 @@ export default defineComponent({
     const cartStore = useCartStore();
     const router = useRouter();
 
-    // roles puede venir como array de strings o de objetos
+  
     const isAdmin = computed(() => {
       const r = authStore.user?.roles;
       if (!r) return false;
@@ -101,7 +101,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-/* Contenedor */
+
 .navbar{
   position: sticky; top: 0; z-index: 50;
   display: grid;
@@ -110,7 +110,7 @@ export default defineComponent({
   gap: .75rem;
   padding: .6rem 1rem;
 
-  /* Fondo con leve gradiente + blur */
+
   background: linear-gradient(90deg, #0f172a 0%, #111827 60%, #0b1220 100%);
   backdrop-filter: saturate(140%) blur(6px);
   border-bottom: 1px solid rgba(255,255,255,.06);
@@ -118,7 +118,7 @@ export default defineComponent({
   color: #e5e7eb;
 }
 
-/* Brand */
+
 .nav-start{ display:flex; align-items:center; gap: .5rem; }
 .brand{
   display:flex; align-items:center; gap:.5rem; cursor:pointer; user-select:none;
@@ -152,18 +152,17 @@ export default defineComponent({
   box-shadow: 0 6px 20px rgba(56,189,248,.25);
 }
 
-/* Inventario con más énfasis para que no se “pierda” */
+
 .nav-link.strong{
   border: 1px solid rgba(59,130,246,.35);
 }
 
-/* Acciones derecha */
+
 .nav-end{ display:flex; align-items:center; gap:.25rem; }
 .cart-btn :deep(.p-badge){ transform: translate(-4px, -6px); }
 .logout-btn{ color:#fca5a5; }
 .logout-btn:hover{ color:#fecaca; }
 
-/* Responsive */
 @media (max-width: 860px){
   .navbar{ grid-template-columns: 1fr auto; grid-auto-rows:auto; }
   .hamburger{ display:inline-flex; }

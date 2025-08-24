@@ -97,7 +97,7 @@
       </template>
     </Dialog>
 
-    <!-- Confirmar eliminación -->
+   
     <Dialog v-model:visible="deleteDialog" header="Confirmar" :modal="true" :style="{ width: '25rem' }">
       <p>¿Eliminar al usuario <b>{{ selectedUser?.username }}</b>?</p>
       <template #footer>
@@ -146,7 +146,6 @@ type FrontUser = User & {
   roles?: Array<string | { name: string; id?: number }>;
 };
 
-// **Tipo que sobreescribe roles a string[] para formularios**
 type UpdatePayload = Omit<Partial<UserUpdate>, 'roles'> & { roles?: string[]; frequent?: boolean };
 
 export default defineComponent({
