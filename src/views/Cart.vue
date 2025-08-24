@@ -31,6 +31,10 @@
               </template>
             </Column>
           </DataTable>
+       <div class="promo-row">
+  <InputSwitch v-model="randomOrder" inputId="rand" />
+  <label for="rand" class="promo-label">Orden aleatoria (50% OFF si la promo está activa)</label>
+</div>
 
           <div class="cart-summary">
             <h3>Total: {{ formatCurrency(cartStore.totalAmount) }}</h3>
@@ -64,15 +68,17 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
 import InputNumber from 'primevue/inputnumber';
+import InputSwitch from 'primevue/inputswitch';
 
 export default defineComponent({
   name: 'CartView',
-  components: { Card, DataTable, Column, Button, InputNumber },
+  components: { Card, DataTable, Column, Button, InputNumber,InputSwitch},
   setup() {
     const cartStore = useCartStore();
     const router = useRouter();
     const toast = useToast();
     const processing = ref(false);
+    const randomOrder = ref(false);
 
     const formatCurrency = (value: number) =>
       typeof value === 'number' ? value.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '$0.00';
@@ -86,8 +92,8 @@ export default defineComponent({
       if (processing.value || cartStore.itemCount === 0) return;
       processing.value = true;
       try {
-        // Usa tu servicio actual tal cual
-        await OrderService.createOrder(cartStore.items);
+      
+        await OrderService.createOrder(cartStore.items,{ random: randomOrder.value });
         toast.add({ severity: 'success', summary: 'Pedido creado', detail: 'Gracias por tu compra' });
         cartStore.clearCart();
         router.push('/my-orders');
@@ -105,11 +111,13 @@ export default defineComponent({
       }
     };
 
-    return { cartStore, formatCurrency, onQtyChange, handleCheckout, processing };
+    return { cartStore, formatCurrency, onQtyChange, handleCheckout, processing, randomOrder };
   }
 });
 </script>
 
 <style scoped>
 .cart-summary { text-align: right; margin-top: 2rem; }
+.promo-row { display:flex; align-items:center; gap:.5rem; margin-top:1rem; }
+.promo-label { user-select:none; }
 </style>

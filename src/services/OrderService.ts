@@ -12,13 +12,13 @@ export interface OrderDto {
 }
 
 class OrderService {
-  createOrder(cartItems: CartItem[]) {
-    const body: CreateOrderRequest = {
-      items: cartItems.map(i => ({ productId: i.id, quantity: i.quantity })),
-      randomOrder: false,
-    };
-    return apiClient.post<OrderDto>('/orders/create', body);
-  }
+  createOrder(cartItems: CartItem[], opts?: {random?: boolean }) {
+  const body: CreateOrderRequest = {
+    items: cartItems.map(i => ({ productId: i.id, quantity: i.quantity })),
+    randomOrder: !!opts?.random,         
+  };
+  return apiClient.post<OrderDto>('/orders/create', body);
+}
 
   getOrdersForCurrentUser() {
     return apiClient.get<OrderDto[]>('/orders/my-orders'); 
